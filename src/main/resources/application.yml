@@ -13,3 +13,7 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+
+jwt:
+  secret:
+    key: SI4lk13mL1d2bfu9sNWUVJEghsNl9XBmWQTyj8d2A4Y795OHr9KCa8pnoFofhYeHB9ucr2/5wScEw/E2qMrdYA==
