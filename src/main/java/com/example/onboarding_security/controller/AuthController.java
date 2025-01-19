@@ -1,9 +1,6 @@
 package com.example.onboarding_security.controller;
 
-import com.example.onboarding_security.controller.dto.SignRequest;
-import com.example.onboarding_security.controller.dto.TokenResponse;
-import com.example.onboarding_security.controller.dto.SignupRequest;
-import com.example.onboarding_security.controller.dto.SignupResponse;
+import com.example.onboarding_security.controller.dto.*;
 import com.example.onboarding_security.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +25,12 @@ public class AuthController {
     @PostMapping("/sign")
     public ResponseEntity<TokenResponse> sign(@Valid @RequestBody SignRequest request) {
         TokenResponse response = authService.sign(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refreshAccessToken(@Valid @RequestBody RefreshTokenRequest request) {
+        TokenResponse response = authService.refreshAccessToken(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

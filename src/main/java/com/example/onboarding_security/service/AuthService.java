@@ -1,15 +1,17 @@
 package com.example.onboarding_security.service;
 
-import com.example.onboarding_security.controller.dto.SignRequest;
-import com.example.onboarding_security.controller.dto.TokenResponse;
-import com.example.onboarding_security.controller.dto.SignupRequest;
-import com.example.onboarding_security.controller.dto.SignupResponse;
+import com.example.onboarding_security.controller.dto.*;
 import com.example.onboarding_security.domain.User;
+import com.example.onboarding_security.global.exception.CustomAuthenticationException;
 import com.example.onboarding_security.global.jwt.JwtUtil;
 import com.example.onboarding_security.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 import static com.example.onboarding_security.domain.User.validateNickname;
 
@@ -18,6 +20,7 @@ import static com.example.onboarding_security.domain.User.validateNickname;
 public class AuthService {
 
     private final JwtUtil jwtUtil;
+    private final RedisTemplate redisTemplate;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -46,5 +49,19 @@ public class AuthService {
 
         TokenResponse response = jwtUtil.generateTokens(user.getId());
         return response;
+    }
+
+    public TokenResponse refreshAccessToken(@Valid RefreshTokenRequest request) {
+        String username = jwtUtil.getUsernameFromToken(request.refreshToken());
+
+        // Redis에서 RefreshToken 조회 및 검증
+        String storedToken = redisTemplate.opsForValue().get("refreshToken:" + username).toString();
+        if (storedToken == null || !storedToken.equals(request.refreshToken())) {
+            throw new CustomAuthenticationException("Refresh Token이 유효하지 않습니다.");
+        }
+
+        // 새로운 Access Token 생성
+        String newAccessToken = jwtUtil.generateAccessToken(username, new Date());
+        return new TokenResponse(newAccessToken, request.refreshToken());
     }
 }

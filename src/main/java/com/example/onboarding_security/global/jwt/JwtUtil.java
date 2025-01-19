@@ -107,4 +107,13 @@ public class JwtUtil {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
         return new UsernamePasswordAuthenticationToken(user.getId(), "", authorities);
     }
+
+    public String getUsernameFromToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+        return claims.getSubject();
+    }
 }
