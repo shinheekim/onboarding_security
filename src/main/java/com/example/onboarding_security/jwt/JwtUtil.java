@@ -54,18 +54,15 @@ public class JwtUtil {
         } catch (UnsupportedJwtException | MalformedJwtException exception) {
             log.error("JWT가 유효하지 않습니다.");
             throw new CustomAuthenticationException("JWT가 유효하지 않습니다.");
-        } catch (SignatureException exception) {
-            log.error("JWT 서명 검증에 실패했습니다.");
-            throw new CustomAuthenticationException("JWT 서명 검증에 실패했습니다.");
         } catch (ExpiredJwtException exception) {
             log.error("JWT가 만료되었습니다.");
-            throw new CustomAuthenticationException("JWT가 만료되었습니다.");
+            throw new CustomAuthenticationException("JWT가 유효하지 않습니다.");
         } catch (IllegalArgumentException exception) {
             log.error("JWT가 null이거나 비어 있거나 공백만 있습니다.");
-            throw new CustomAuthenticationException("JWT가 null이거나 비어 있거나 공백만 있습니다.");
+            throw new CustomAuthenticationException("JWT가 유효하지 않습니다.");
         } catch (Exception exception) {
             log.error("JWT 검증에 실패했습니다.", exception);
-            throw new CustomAuthenticationException("JWT 검증에 실패했습니다.");
+            throw new CustomAuthenticationException("JWT가 유효하지 않습니다.");
         }
     }
 
