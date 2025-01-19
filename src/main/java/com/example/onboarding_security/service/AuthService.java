@@ -8,6 +8,8 @@ import com.example.onboarding_security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.example.onboarding_security.domain.User.validateNickname;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,6 +20,7 @@ public class AuthService {
         if (userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("해당 유저 아이디가 존재합니다.");
         }
+        validateNickname(request.nickname());
 
         User user = User.builder()
                 .username(request.username())
