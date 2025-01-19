@@ -1,4 +1,4 @@
-package com.example.onboarding_security.global.jwt;
+package com.example.onboarding_security.controller.dto;
 
 public record TokenResponse(
         String accessToken,
