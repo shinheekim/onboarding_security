@@ -29,6 +29,7 @@ public class JwtUtil {
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${jwt.secret.key}")
     private String secret;
@@ -41,20 +42,32 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String generateAccessToken(Long userId, Date date) {
+    public TokenResponse generateTokens(Long userId) {
+        Date date = new Date();
+        String userIdString = String.valueOf(userId);
+
+        String accessToken = generateAccessToken(userIdString, date);
+        String refreshToken = generateRefreshToken(userIdString, date);
+
+        refreshTokenService.saveRefreshToken(userIdString, refreshToken);
+
+        return TokenResponse.of(accessToken, refreshToken);
+    }
+
+    public String generateAccessToken(String userId, Date date) {
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(userId)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String generateRefreshToken(Long userId, Date date) {
+    public String generateRefreshToken(String userId, Date date) {
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(userId)
                 .setIssuedAt(date)
-                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
