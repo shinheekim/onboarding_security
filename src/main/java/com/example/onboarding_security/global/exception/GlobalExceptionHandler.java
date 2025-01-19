@@ -1,6 +1,5 @@
-package com.example.onboarding_security.global;
+package com.example.onboarding_security.global.exception;
 
-import com.example.onboarding_security.exception.CustomAuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,6 +1,6 @@
-package com.example.onboarding_security.jwt;
+package com.example.onboarding_security.global.jwt;
 
-import com.example.onboarding_security.exception.CustomAuthenticationException;
+import com.example.onboarding_security.global.exception.CustomAuthenticationException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
                 Authentication authentication = jwtUtil.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Security Context에 인증 정보를 저장했습니다. 인증된 사용자: {}", authentication.getPrincipal());
+                log.info("Security Context에 인증 정보를 저장 성공. 인증된 사용자: {}", authentication.getPrincipal());
             }
             filterChain.doFilter(request, response);
         } catch (CustomAuthenticationException e) {

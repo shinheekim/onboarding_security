@@ -1,7 +1,7 @@
-package com.example.onboarding_security.jwt;
+package com.example.onboarding_security.global.jwt;
 
 import com.example.onboarding_security.domain.User;
-import com.example.onboarding_security.exception.CustomAuthenticationException;
+import com.example.onboarding_security.global.exception.CustomAuthenticationException;
 import com.example.onboarding_security.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
