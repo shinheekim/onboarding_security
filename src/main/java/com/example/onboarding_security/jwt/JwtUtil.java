@@ -1,17 +1,24 @@
 package com.example.onboarding_security.jwt;
 
+import com.example.onboarding_security.domain.User;
 import com.example.onboarding_security.exception.CustomAuthenticationException;
+import com.example.onboarding_security.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +27,8 @@ public class JwtUtil {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+
+    private final UserRepository userRepository;
 
     @Value("${jwt.secret.key}")
     private String secret;
@@ -66,5 +75,15 @@ public class JwtUtil {
         }
     }
 
-    // TODO: 토큰 받아서 인증하는 메서드 추가
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        User user = userRepository.findById(Long.valueOf(claims.getSubject())).
+                orElseThrow();
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
+        return new UsernamePasswordAuthenticationToken(user.getId(), "", authorities);
+    }
 }
