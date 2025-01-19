@@ -2,6 +2,7 @@ package com.example.onboarding_security.jwt;
 
 import com.example.onboarding_security.domain.User;
 import com.example.onboarding_security.exception.CustomAuthenticationException;
+import com.example.onboarding_security.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -26,6 +27,8 @@ public class JwtUtil {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+
+    private final UserRepository userRepository;
 
     @Value("${jwt.secret.key}")
     private String secret;
