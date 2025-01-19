@@ -1,11 +1,14 @@
 package com.example.onboarding_security.service;
 
+import com.example.onboarding_security.controller.dto.SignRequest;
+import com.example.onboarding_security.controller.dto.TokenResponse;
 import com.example.onboarding_security.controller.dto.SignupRequest;
 import com.example.onboarding_security.controller.dto.SignupResponse;
 import com.example.onboarding_security.domain.User;
 import com.example.onboarding_security.global.jwt.JwtUtil;
 import com.example.onboarding_security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.example.onboarding_security.domain.User.validateNickname;
@@ -26,7 +29,7 @@ public class AuthService {
 
         User user = User.builder()
                 .username(request.username())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .nickname(request.nickname())
                 .build();
         userRepository.save(user);
