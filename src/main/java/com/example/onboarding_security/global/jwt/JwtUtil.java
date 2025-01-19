@@ -41,24 +41,22 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public TokenResponse generateToken(Long userId) {
-        Date date = new Date();
-
-        String accessToken = Jwts.builder()
+    public String generateAccessToken(Long userId, Date date) {
+        return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+    }
 
-        String refreshToken = Jwts.builder()
+    public String generateRefreshToken(Long userId, Date date) {
+        return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .setIssuedAt(date)
-                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-
-        return new TokenResponse(accessToken, refreshToken);
     }
 
     public boolean validateToken(String token) {
