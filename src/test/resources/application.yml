@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/onboarding
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+jwt:
+  secret:
+    key: SI4lk13mL1d2bfu9sNWUVJEghsNl9XBmWQTyj8d2A4Y795OHr9KCa8pnoFofhYeHB9ucr2/5wScEw/E2qMrdYA==

@@ -1,7 +1,7 @@
-package com.example.onboarding_security.jwt;
+package com.example.onboarding_security.global.jwt;
 
 import com.example.onboarding_security.domain.User;
-import com.example.onboarding_security.exception.CustomAuthenticationException;
+import com.example.onboarding_security.global.exception.CustomAuthenticationException;
 import com.example.onboarding_security.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -29,6 +29,7 @@ public class JwtUtil {
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${jwt.secret.key}")
     private String secret;
@@ -41,14 +42,32 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // TODO: 우선 userId를 받을 예정
-    public String generateToken(Long userId) {
+    public TokenResponse generateTokens(Long userId) {
         Date date = new Date();
-        Date expiryDate = new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
+        String userIdString = String.valueOf(userId);
+
+        String accessToken = generateAccessToken(userIdString, date);
+        String refreshToken = generateRefreshToken(userIdString, date);
+
+        refreshTokenService.saveRefreshToken(userIdString, refreshToken);
+
+        return TokenResponse.of(accessToken, refreshToken);
+    }
+
+    public String generateAccessToken(String userId, Date date) {
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
+                .setSubject(userId)
                 .setIssuedAt(date)
-                .setExpiration(expiryDate)
+                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId, Date date) {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(date)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
@@ -81,6 +100,7 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
         User user = userRepository.findById(Long.valueOf(claims.getSubject())).
                 orElseThrow();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));

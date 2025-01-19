@@ -1,4 +1,4 @@
-package com.example.onboarding_security.jwt;
+package com.example.onboarding_security.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

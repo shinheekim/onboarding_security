@@ -1,4 +1,4 @@
-package com.example.onboarding_security.exception;
+package com.example.onboarding_security.global.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
