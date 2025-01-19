@@ -1,4 +1,4 @@
-package com.example.onboarding_security.config;
+package com.example.onboarding_security.global.config;
 
 import com.example.onboarding_security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
