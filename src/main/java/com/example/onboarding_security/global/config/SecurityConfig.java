@@ -1,6 +1,6 @@
 package com.example.onboarding_security.global.config;
 
-import com.example.onboarding_security.jwt.JwtAuthenticationFilter;
+import com.example.onboarding_security.global.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
