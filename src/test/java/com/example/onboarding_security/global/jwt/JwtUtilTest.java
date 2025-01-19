@@ -1,7 +1,5 @@
-package com.example.onboarding_security;
+package com.example.onboarding_security.global.jwt;
 
-import com.example.onboarding_security.global.jwt.JwtUtil;
-import com.example.onboarding_security.global.jwt.RefreshTokenService;
 import com.example.onboarding_security.repository.UserRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

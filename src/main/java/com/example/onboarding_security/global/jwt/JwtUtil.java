@@ -1,5 +1,6 @@
 package com.example.onboarding_security.global.jwt;
 
+import com.example.onboarding_security.controller.dto.TokenResponse;
 import com.example.onboarding_security.domain.User;
 import com.example.onboarding_security.global.exception.CustomAuthenticationException;
 import com.example.onboarding_security.repository.UserRepository;
@@ -105,5 +106,14 @@ public class JwtUtil {
                 orElseThrow();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
         return new UsernamePasswordAuthenticationToken(user.getId(), "", authorities);
+    }
+
+    public String getUsernameFromToken(String refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+        return claims.getSubject();
     }
 }
