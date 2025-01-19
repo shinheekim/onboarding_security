@@ -41,16 +41,24 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // TODO: 우선 userId를 받을 예정
-    public String generateToken(Long userId) {
+    public TokenResponse generateToken(Long userId) {
         Date date = new Date();
-        Date expiryDate = new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
-        return Jwts.builder()
+
+        String accessToken = Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .setIssuedAt(date)
-                .setExpiration(expiryDate)
+                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .setIssuedAt(date)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     public boolean validateToken(String token) {
@@ -81,6 +89,7 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
         User user = userRepository.findById(Long.valueOf(claims.getSubject())).
                 orElseThrow();
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().toString()));
