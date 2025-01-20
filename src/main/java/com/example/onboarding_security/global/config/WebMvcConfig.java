@@ -10,7 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("http://localhost:8080", "http://43.202.56.142:8080")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .exposedHeaders("Set-Cookie", "Authorization")
@@ -19,13 +19,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         // Swagger UI 관련 경로에 대해서도 CORS 허용
         registry.addMapping("/swagger-ui/**")
-                .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("http://localhost:8080", "http://43.202.56.142:8080")
                 .allowedMethods("GET", "POST")
                 .allowedHeaders("*")
                 .allowCredentials(true);
 
         registry.addMapping("/v3/api-docs/**")
-                .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("http://localhost:8080", "http://43.202.56.142:8080")
                 .allowedMethods("GET")
                 .allowedHeaders("*")
                 .allowCredentials(true);
